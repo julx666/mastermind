@@ -1,30 +1,45 @@
 from collections import Counter
 
-def check(k, hidden, query):
-    #sprawdzanie poprawności wejścia
-    if len(hidden) != len(query):
-        raise ValueError("Długości sekwencji ukrutej i kodującej muszą być równe")
 
-    if not all((1 <= x <= k) for x in hidden + query):
-        raise ValueError("Liczby muszą należeć do przedziału od 1 do k(liczby dostępnych kolorów)")
-    #liczenie pionków na właściwym miejscu
-    correct_position_and_color = sum(h == q for h, q in zip(hidden, query)) #sprawdzamy czy elementy w parze są takie same
+class Judge:
+    @staticmethod
+    def check(k, hidden, guess):
+        """Check a guess against the hidden code in a Mastermind-like game.
 
-    #liczenie pionków o właściwym kolorze
-    hidden_remaining = [h for h, q in zip(hidden, query) if h != q]
-    query_remaining = [q for h, q in zip(hidden, query) if h != q]
+        Args:
+            k: Maximum color value (1 to k)
+            hidden: List of numbers representing the hidden code
+            guess: List of numbers representing the guess
 
-    hidden_remaining = set(hidden_remaining)
-    query_remaining = set(query_remaining)
+        Returns:
+            Tuple of (exact matches, color matches)
+        """
+        # Basic validation
+        if len(hidden) != len(guess):
+            raise ValueError("Sequences must be the same length")
 
-    correct_color = 0
-    for color in query_remaining:
-        if color in hidden_remaining:
-            correct_color += 1
+        if any(x < 1 or x > k for x in hidden + guess):
+            raise ValueError(f"All numbers must be between 1 and {k}")
 
-    return correct_position_and_color, correct_color
+        # Count exact matches (right color, right position)
+        correct_position_and_color = sum(h == q for h, q in zip(hidden, guess))
 
+        # Get unmatched pegs and count color matches
+        hidden_remaining = [h for h, q in zip(hidden, guess) if h != q]
+        guess_remaining = [q for h, q in zip(hidden, guess) if h != q]
 
-hidden = [2,3,1,2]
-query = [2,3,1,2]
-print(check(4, hidden, query))
+        hidden_remaining = set(hidden_remaining)
+        guess_remaining = set(guess_remaining)
+
+        correct_color = 0
+        for color in guess_remaining:
+            if color in hidden_remaining:
+                correct_color += 1
+
+        return correct_position_and_color, correct_color
+
+# Example usage
+# hidden = [2,3,1,2]
+# query = [2,3,1,1]
+# judge = Judge()
+# print(judge.check(4, hidden, query))
