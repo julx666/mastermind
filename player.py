@@ -1,4 +1,5 @@
 import random
+from simple_interface import Interface
 
 
 class AutoPlayer:
@@ -20,6 +21,19 @@ class AutoPlayer:
 
         # If we can't find a unique query after max attempts
         raise RuntimeError("Unable to generate unique query after maximum attempts")
+
+
+class ManualPlayer:
+    def __init__(self, interface):
+        self.used_queries = []
+        self.interface = interface
+
+    def get_query(self, k):
+        while True:
+            query = self.interface.get_query_seq_from_the_user(k)
+            if query not in self.used_queries:
+                self.used_queries.append(query)
+                return query
 
 
 # o = AutoPlayer()

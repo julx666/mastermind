@@ -8,7 +8,7 @@ from PyQt5.QtCore import Qt
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Welcome in the Mastermind game")
+        self.setWindowTitle("Welcome to the Mastermind game")
         # self.setGeometry(x, y, width, height)
         self.setGeometry(350, 100, 700, 700)
         self.initUI()
@@ -17,6 +17,7 @@ class MainWindow(QMainWindow):
         label.setFont(QFont("Arial", 15))
         label.setStyleSheet("color: #64cbd9;"
                             "font-weight: bold;")
+        label.move(300, 0)
 
         # label.setAlignment(Qt.AlignTop) # vertically top
         # label.setAlignment(Qt.AlignBottom) # vertically bottom
@@ -37,6 +38,8 @@ class MainWindow(QMainWindow):
         painter.setPen(QPen(Qt.black, 5, Qt.SolidLine))
         painter.setBrush(QBrush(Qt.darkGray, Qt.SolidPattern))
         painter.drawRect(150, 70, 400, 600)
+
+
 def main():
     app = QApplication(sys.argv)
     window = MainWindow()
