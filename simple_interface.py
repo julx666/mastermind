@@ -1,9 +1,11 @@
+import random
+
 class Interface:
 
     @staticmethod
     def get_k_from_user():
         while True:
-            k = int(input("Enter k (the length of sequences): "))
+            k = int(input("Enter k (the length of sequences): "))# nie rzutuj na int tylko sprawdz czy jest digit
             if k > 0:
                 return k
             else:
@@ -12,7 +14,7 @@ class Interface:
     @staticmethod
     def get_n_from_user():
         while True:
-            n = int(input("Enter n (the number of attempts): "))
+            n = int(input("Enter n (the number of attempts): ")) # nie rzutuj na int tylko sprawdz czy jest digit
             if n > 0:
                 return n
             else:
@@ -22,12 +24,19 @@ class Interface:
         k = self.get_k_from_user()
         n = self.get_n_from_user()
         game_mode = self.choose_game_mode()
+        hidden_seq = None
 
         if game_mode == "auto":
-            random_generated = input(("Do you want choose hidden sequence? otherwise it will be generated [y/n]: "))
-            if random_generated == "y":
-                hidden_seq = input("Give hidden sequence: ")
-                return hidden_seq
+            # random_generated = input(("Do you want choose hidden sequence? otherwise it will be generated [y/n]: "))
+            if self.is_hidden_seq_random(): # co sie stanie kiedy uzytkownik wpisze 'yes'??
+                # hidden_seq = input("Give hidden sequence: ")
+                hidden_seq = self.get_seq_from_the_user(k)
+            else:
+                hidden_seq = [random.randint(1, k) for _ in range(k)]
+        else:
+            hidden_seq = [random.randint(1, k) for _ in range(k)]
+
+        return k, n, game_mode, hidden_seq
 
     @staticmethod
     def choose_game_mode():
@@ -41,13 +50,16 @@ class Interface:
                 game_mode = input("Which game mode are you choosing? auto or manual: ")
 
     @staticmethod
-    def is_hidden_seq_random():
+    def is_hidden_seq_random() -> bool:
         hidden_seq_random = input("Do you want to choose hidden sequence by yourself"
                                   "otherwise it is going to be generated randomly [y/n]: ")
 
         while True:
             if hidden_seq_random == 'y' or hidden_seq_random == 'n':
-                return hidden_seq_random
+                if hidden_seq_random == 'y':
+                    return True
+                else:
+                    return False
             else:
                 print("Wrong input!")
                 hidden_seq_random = input("Do you want to choose hidden sequence by yourself"

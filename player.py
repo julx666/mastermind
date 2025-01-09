@@ -29,11 +29,12 @@ class ManualPlayer:
         self.interface = interface
 
     def get_query(self, k):
-        while True:
-            query = self.interface.get_query_seq_from_the_user(k)
-            if query not in self.used_queries:
-                self.used_queries.append(query)
-                return query
+        # while True:
+        #     query = self.interface.get_query_seq_from_the_user(k)
+        #     if query not in self.used_queries:
+        #         self.used_queries.append(query)
+        #         return query
+        return self.interface.get_query_seq_from_the_user(k)
 
 
 # o = AutoPlayer()
