@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, QH
                            QLabel, QPushButton, QGridLayout, QSpinBox, QRadioButton,
                            QButtonGroup, QMessageBox, QInputDialog)
 from PyQt5.QtGui import QPainter, QColor, QPen, QBrush
-from PyQt5.QtCore import Qt, QSize, QTimer
+from PyQt5.QtCore import Qt, QSize
 import sys
 from judge import Judge
 from player import AutoPlayer, ManualPlayer
@@ -175,21 +175,30 @@ class MastermindGUI(QMainWindow):
         self.auto_radio = QRadioButton("Auto Player")
         self.manual_radio = QRadioButton("Manual Player")
         self.manual_radio.setChecked(True)
+        
+        # Connect radio buttons to update sequence options
+        self.auto_radio.toggled.connect(self.updateSequenceOptions)
+        
         mode_layout.addWidget(mode_label)
         mode_layout.addWidget(self.auto_radio)
         mode_layout.addWidget(self.manual_radio)
         config_layout.addLayout(mode_layout)
 
-        # Sequence selection
-        seq_layout = QVBoxLayout()
+        # Sequence selection (only visible in auto mode)
+        self.seq_layout = QVBoxLayout()
         seq_label = QLabel("Hidden Sequence:")
         self.random_seq_radio = QRadioButton("Random")
         self.manual_seq_radio = QRadioButton("Manual")
         self.random_seq_radio.setChecked(True)
-        seq_layout.addWidget(seq_label)
-        seq_layout.addWidget(self.random_seq_radio)
-        seq_layout.addWidget(self.manual_seq_radio)
-        config_layout.addLayout(seq_layout)
+        self.seq_layout.addWidget(seq_label)
+        self.seq_layout.addWidget(self.random_seq_radio)
+        self.seq_layout.addWidget(self.manual_seq_radio)
+        
+        # Create a widget to hold the sequence options
+        self.seq_widget = QWidget()
+        self.seq_widget.setLayout(self.seq_layout)
+        self.seq_widget.hide()  # Initially hidden
+        config_layout.addWidget(self.seq_widget)
         
         # Start button
         self.start_button = QPushButton("Start Game")
@@ -204,6 +213,10 @@ class MastermindGUI(QMainWindow):
         
         central_widget.setLayout(layout)
         self.setCentralWidget(central_widget)
+
+    def updateSequenceOptions(self, checked):
+        # Show sequence options only in auto mode
+        self.seq_widget.setVisible(checked)
 
     def getManualSequence(self):
         sequence = []
@@ -236,14 +249,20 @@ class MastermindGUI(QMainWindow):
         self.n = self.n_spin.value()
         self.game_over = False
         
-        # Get hidden sequence
-        if self.manual_seq_radio.isChecked():
-            self.hidden_seq = self.getManualSequence()
-            if self.hidden_seq is None:  # User cancelled
-                return
-        else:
+        # Generate hidden sequence based on game mode
+        if self.manual_radio.isChecked():
+            # Manual player mode - always random sequence
             import random
             self.hidden_seq = [random.randint(1, self.k) for _ in range(self.k)]
+        else:
+            # Auto player mode - check sequence option
+            if self.manual_seq_radio.isChecked():
+                self.hidden_seq = self.getManualSequence()
+                if self.hidden_seq is None:  # User cancelled
+                    return
+            else:
+                import random
+                self.hidden_seq = [random.randint(1, self.k) for _ in range(self.k)]
         
         # Setup player
         is_auto_mode = self.auto_radio.isChecked()
