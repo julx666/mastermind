@@ -7,21 +7,23 @@ class Game:
     """
     Represents the main game logic, managing turns, player interactions, and game status.
     """
+
     def __init__(self):
         self.player = None
         self.judge = Judge()
         self.interface = Interface()
-        self.n, self.k, self.game_mode, self.hidden_seq = self.interface.get_game_config()
+        self.n, self.k, self.game_mode, self.hidden_seq = (
+            self.interface.get_game_config()
+        )
         self.max_turns = 10  # Adjust maximum turns based on sequence length
         self.turns = 0  # Initialize turn counter
-        # print(self.game_mode)
         self.choose_player()
 
     def choose_player(self):
         """
         Chooses the type of player based on the game mode.
         """
-        if self.game_mode == 'auto':
+        if self.game_mode == "auto":
             self.player = AutoPlayer()
         else:
             self.player = ManualPlayer()
@@ -54,13 +56,14 @@ class Game:
         """
         Runs the main game loop.
         """
-        print(f"\nGame started! Try to guess a sequence of length {self.n} using numbers 1 to {self.k}")
+        print(
+            f"\nGame started! Try to guess a sequence of length {self.n} using numbers 1 to {self.k}"
+        )
         print(f"You have {self.max_turns} turns to guess correctly.\n")
         print("Press Ctrl+D at any time to end the game early.\n")
 
         while True:
             try:
-                # print(f"hidden: {self.hidden_seq}") #test
                 # Get query from the player
                 query = self.player.get_query(self.n, self.k)
                 print(f"Your guess: {query}")
@@ -68,10 +71,14 @@ class Game:
                 self.turns += 1
 
                 # Check the query against the hidden sequence
-                correct_position_and_color, correct_color = self.judge.check(self.k, self.hidden_seq, query)
+                correct_position_and_color, correct_color = self.judge.check(
+                    self.k, self.hidden_seq, query
+                )
 
                 # Check game status and break the loop if the game is over
-                if not self.check_game_status(correct_position_and_color, correct_color):
+                if not self.check_game_status(
+                    correct_position_and_color, correct_color
+                ):
                     break
 
             except EOFError:

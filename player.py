@@ -1,4 +1,5 @@
 import random
+
 from simple_interface import Interface
 
 
@@ -6,6 +7,7 @@ class AutoPlayer:
     """
     Represents an automated player that generates unique random queries.
     """
+
     def __init__(self):
         self.used_queries = []
         self.interface = Interface()
@@ -26,9 +28,11 @@ class AutoPlayer:
             RuntimeError: If a unique query cannot be generated within the maximum attempts.
         """
         # Calculate maximum possible attempts to avoid infinite recursion
-        max_possibilities = k ** n
+        max_possibilities = k**n
         attempts = 0
-        max_attempts = min(max_possibilities, 100)  # Limit attempts to avoid excessive recursion
+        max_attempts = min(
+            max_possibilities, 100
+        )  # Limit attempts to avoid excessive recursion
 
         while attempts < max_attempts:
             query = [random.randint(1, k) for _ in range(n)]
@@ -47,6 +51,7 @@ class ManualPlayer:
     """
     Represents a manual player that provides queries via user input.
     """
+
     def __init__(self):
         self.used_queries = []
         self.interface = Interface()
