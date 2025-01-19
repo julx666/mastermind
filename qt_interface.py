@@ -7,6 +7,7 @@ import sys
 from judge import Judge
 from player import AutoPlayer, ManualPlayer
 
+
 class PegWidget(QWidget):
     def __init__(self, color=Qt.gray, size=30):
         super().__init__()
@@ -24,6 +25,7 @@ class PegWidget(QWidget):
     def setColor(self, color):
         self.color = color
         self.update()
+
 
 class MastermindBoard(QWidget):
     COLORS = [QColor(Qt.red), QColor(Qt.blue), QColor(Qt.green), 
